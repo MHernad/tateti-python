@@ -161,14 +161,6 @@ def jugadaIA():
         dibujaO(casilla_ia, jugadas)
 
 
-
-
-    # Si no hay oportunidades de ganar o bloquear, elegir una casilla al azar
-    if casillas_disponibles:
-        casilla_ia = random.choice(casillas_disponibles)
-        dibujaO(casilla_ia, jugadas)
-
-
 while True:
     success, image = cap.read()
     image = cv2.resize(image, (300, 300))
