@@ -124,9 +124,50 @@ def esGanador(jugador):
 
 def jugadaIA():
     casillas_disponibles = [i + 1 for i, jugada in enumerate(jugadas) if not jugada.usado]
+
+    # Verificar si el jugador puede ganar en la próxima jugada y bloquear esa casilla
+    for conjunto in posiciones_ganadoras:
+        if any(jugadas[i - 1].player == "humano" for i in conjunto):
+            casillas_faltantes = set(conjunto) - set([i + 1 for i, jugada in enumerate(jugadas) if jugada.player == "humano"])
+            casillas_disponibles = list(casillas_faltantes.intersection(casillas_disponibles))
+            if casillas_disponibles:
+                casilla_ia = casillas_disponibles[0]
+                dibujaO(casilla_ia, jugadas)
+                return
+
+    # Bloquear una jugada estratégica del jugador para evitar la derrota
+    for conjunto in posiciones_ganadoras:
+        casillas_jugador = [i + 1 for i, jugada in enumerate(jugadas) if jugada.player == "humano"]
+        casillas_faltantes = set(conjunto) - set(casillas_jugador)
+        casillas_disponibles = list(casillas_faltantes.intersection(casillas_disponibles))
+        if len(casillas_disponibles) == 1:
+            casilla_ia = casillas_disponibles[0]
+            dibujaO(casilla_ia, jugadas)
+            return
+
+    # Verificar si la IA puede ganar en la próxima jugada y hacerlo
+    for conjunto in posiciones_ganadoras:
+        if any(jugadas[i - 1].player == "IA" for i in conjunto):
+            casillas_faltantes = set(conjunto) - set([i + 1 for i, jugada in enumerate(jugadas) if jugada.player == "IA"])
+            casillas_disponibles = list(casillas_faltantes.intersection(casillas_disponibles))
+            if casillas_disponibles:
+                casilla_ia = casillas_disponibles[0]
+                dibujaO(casilla_ia, jugadas)
+                return
+
+    # Si no hay oportunidades de ganar, bloquear o llevar a empate, elegir una casilla al azar
     if casillas_disponibles:
         casilla_ia = random.choice(casillas_disponibles)
         dibujaO(casilla_ia, jugadas)
+
+
+
+
+    # Si no hay oportunidades de ganar o bloquear, elegir una casilla al azar
+    if casillas_disponibles:
+        casilla_ia = random.choice(casillas_disponibles)
+        dibujaO(casilla_ia, jugadas)
+
 
 while True:
     success, image = cap.read()
